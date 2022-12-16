@@ -1,6 +1,5 @@
 #/bin/bash
 
-
 TempPath="./tmp"
 arch="x86_64-linux"
 
@@ -27,7 +26,7 @@ echo $ZipUrl
 if [ ! ${#ZipUrl} -gt 5 ]
 then
     echo "Url: "$ZipUrl 
-    echo " Parse Download Url Failed"
+    echo "Parse Download Url Failed"
     exit
 fi
 
@@ -46,7 +45,7 @@ fi
 echo "Start to Download New Version of Zig"
 if [ "$(curl -L -w '%{http_code}' $ZipUrl -o $FileName )" = "200" ]; 
 then
-    echo " Download Success"
+    echo "Download Success"
 else
     echo "Download Failed, Restart this scirpt may fix this problem."
     exit
@@ -59,9 +58,21 @@ tar -xf $FileName -C $TempPath --strip-components 1
 
 echo "UnCompress Finished, Start to Delete and Update Zig to: $FileName "
 # Delele the old Version
-ls | grep -v 'zls\|tmp\|updateZig.sh' | xargs rm -rf
-# Retrive New Ziglang Prebuild Files
+
+# This line will clean the directory but only zig and zls will leave .
+# Know & Use
+# ls | grep -v 'zls\|tmp\|updateZig.sh' | xargs rm -rf
+
+
+rm -rf ./doc
+rm -rf ./lib
+rm ./zig
+
 cp -r ./tmp/* ./
+mv $FileName ./tmp
+mv index.json ./tmp
 # Clean
+
 rm -rf ./tmp
+
 echo "Update Zig finished!"
